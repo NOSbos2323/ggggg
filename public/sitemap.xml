@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://uaejobe.netlify.app/</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/en</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/jobs</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/jobs" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en/jobs" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/services</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/services" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en/services" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/search</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/search" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en/search" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/about</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/about" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en/about" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/contact</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://uaejobe.netlify.app/contact" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://uaejobe.netlify.app/en/contact" />
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/construction</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/electrical</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/plumbing</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/cleaning</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/carpentry</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/category/painting</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/dubai</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/abu-dhabi</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/sharjah</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/ajman</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/fujairah</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/ras-al-khaimah</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uaejobe.netlify.app/city/umm-al-quwain</loc>
+    <lastmod>2024-12-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+</urlset>
