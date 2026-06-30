@@ -38,3 +38,9 @@
   for = "*.woff2"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+[[redirects]]
+  from = "/go"
+  query = {url = ":url"}
+  to = ":url"
+  status = 302
+  force = true
