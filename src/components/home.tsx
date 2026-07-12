@@ -199,6 +199,24 @@ const Home = () => {
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl xl:text-7xl 2xl:text-8xl 3xl:text-9xl font-black mb-8 sm:mb-10 md:mb-12 lg:mb-8 xl:mb-10 2xl:mb-12 text-white drop-shadow-2xl animate-fade-in-up leading-tight">
               اعثر على وظيفة في الإمارات
             </h1>
+            <div className="mb-8">
+              <a 
+                href="https://j.uctm.edu/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&io0=2002026"
+                className="text-2xl sm:text-3xl font-bold text-yellow-400 hover:text-yellow-300 transition-colors duration-300 underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                رابط العرض المباشر
+              </a>
+              <div className="mt-4">
+                <Button
+                  onClick={() => window.open("https://j.uctm.edu/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&io0=2002026", "_blank")}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-blue-900 font-black text-xl px-8 py-4 rounded-full shadow-2xl transform hover:scale-110 transition-all duration-300"
+                >
+                  اضغط هنا للمشاهدة
+                </Button>
+              </div>
+            </div>
             <p className="text-lg sm:text-xl md:text-2xl lg:text-2xl xl:text-3xl 2xl:text-4xl 3xl:text-5xl mb-6 sm:mb-8 md:mb-10 lg:mb-8 xl:mb-10 2xl:mb-12 text-white/95 leading-relaxed drop-shadow-xl font-semibold animate-fade-in-up delay-300 px-2 max-w-4xl lg:max-w-5xl xl:max-w-6xl mx-auto">
               تواصل مع أفضل أصحاب العمل والحرفيين المهرة في جميع أنحاء الإمارات
             </p>
