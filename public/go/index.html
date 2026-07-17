@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index, follow" />
+  <title>إعادة توجيه…</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Tahoma, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+    }
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 1.5rem;
+      background: rgba(13, 148, 136, 0.15);
+      border-radius: 50%;
+    }
+    .icon svg {
+      width: 28px;
+      height: 28px;
+      color: #14b8a6;
+    }
+    h1 {
+      font-size: 1.25rem;
+      margin: 0 0 0.5rem;
+      color: #f1f5f9;
+    }
+    p {
+      font-size: 0.875rem;
+      color: #94a3b8;
+      margin: 0.5rem 0 0;
+      word-break: break-all;
+    }
+    .error {
+      color: #f87171;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 1.5rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #14b8a6, #0d9488);
+      color: #0f172a;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: transform 0.15s;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .meta {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid #334155;
+      font-size: 0.75rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+      </svg>
+    </div>
+    <h1 id="title">جاري إعادة التوجيه…</h1>
+    <p id="message">يرجى الانتظار لحظة.</p>
+    <a id="manual-link" href="#" class="btn" style="display:none;">الانتقال يدوياً</a>
+    <div class="meta">
+      Powered by <a href="https://instant-indexing-hub.vercel.app" target="_blank" rel="noopener noreferrer" style="color:#14b8a6;">Instant Indexing Hub</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var encoded = params.get('url') || '';
+
+      function showError(message) {
+        document.getElementById('title').textContent = 'تعذّرت إعادة التوجيه';
+        document.getElementById('title').classList.add('error');
+        document.getElementById('message').textContent = message;
+      }
+
+      if (!encoded) {
+        showError('الرابط مفقود. تأكد من استخدام الرابط الصحيح.');
+        return;
+      }
+
+      // Decode URL-safe Base64
+      try {
+        var s = encoded.replace(/-/g, '+').replace(/_/g, '/');
+        var pad = s.length % 4;
+        if (pad) s += '='.repeat(4 - pad);
+        // atob gives Latin-1, decode UTF-8 bytes
+        var binary = atob(s);
+        var bytes = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        var decoded = new TextDecoder('utf-8').decode(bytes);
+
+        // Validate it's an http(s) URL
+        var target;
+        try {
+          target = new URL(decoded);
+        } catch (e) {
+          showError('الرابط غير صالح.');
+          return;
+        }
+        if (target.protocol !== 'http:' && target.protocol !== 'https:') {
+          showError('البروتوكول غير مدعوم. فقط http و https مسموح.');
+          return;
+        }
+
+        // Show the destination + immediate redirect
+        document.getElementById('message').textContent = 'سيتم تحويلك إلى: ' + target.href;
+        var manualLink = document.getElementById('manual-link');
+        manualLink.href = target.href;
+        manualLink.style.display = 'inline-block';
+
+        // 302-equivalent: immediate redirect via JavaScript
+        // (GoogleBot executes JavaScript redirects since 2019, so this
+        //  works for SEO purposes — equivalent to a 302 server redirect)
+        window.location.replace(target.href);
+      } catch (e) {
+        showError('فك تشفير الرابط فشل.');
+      }
+    })();
+  </script>
+</body>
+</html>
