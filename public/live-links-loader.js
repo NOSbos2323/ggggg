@@ -50,7 +50,10 @@
   } catch (e) {
     return;
   }
-  var HUB = src.origin;
+  // The HUB origin — hardcoded because the script is loaded from a
+  // different domain (sub-project) than where /api/live-links lives.
+  // Using src.origin would point to the sub-project itself, returning 404.
+  var HUB = 'https://instant-indexing-hub.vercel.app';
 
   function getParam(name, defaultValue) {
     return (
