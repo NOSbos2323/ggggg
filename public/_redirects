@@ -1,1 +1,11 @@
-/*    /index.html   200
+# Netlify redirects for uaejobe (uaejobe.netlify.app)
+# IMPORTANT: order matters — first match wins.
+
+# /go — handled by /go/index.html (a static page that decodes Base64
+# and redirects via JavaScript). This works because Netlify serves the
+# index.html in /go/ folder when /go is requested (without trailing slash).
+# We DON'T use a Netlify redirect rule for /go because Netlify redirects
+# don't support Base64 decoding.
+
+# SPA fallback — catch-all for client-side routing (React Router).
+/*  /index.html  200
