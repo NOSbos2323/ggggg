@@ -8,22 +8,26 @@
  *     src="https://instant-indexing-hub.vercel.app/live-links-loader.js"
  *     data-limit="8"
  *     data-shuffle="1"
- *     data-mode="buttons"
- *     data-container="body"
+ *     data-mode="internal"
+ *     data-container="main"
+ *     data-position="append"
  *     defer
  *   ></script>
  *
  * Parameters (via data-* attributes OR query string):
  *   data-limit         Max number of links to inject (default 8)
  *   data-shuffle       "1" = randomize order, "0" = keep weight order (default 1)
- *   data-mode          "buttons" = visible buttons (DEFAULT)
- *                     "hidden"   = off-screen links (SEO-only, invisible to humans)
- *                     "list"     = simple <ul> with text links
+ *   data-mode          "internal" (DEFAULT) — natural in-content links with descriptions
+ *                     "inline"    — inline <a> tags in a single paragraph (SEO-friendly)
+ *                     "buttons"   — visible card grid (UI widget)
+ *                     "list"      — simple <ul> list
+ *                     "hidden"    — off-screen links (SEO-only, invisible to humans)
  *   data-container     CSS selector for where to inject (default: 'body')
  *   data-position      "append" (default) | "prepend" | "before" | "after"
  *   data-class         CSS class to add to each <a> tag
- *   data-title         Optional heading text above the injected block
+ *   data-heading       Optional heading text above the injected block
  *                      (default: "روابط ذات صلة")
+ *   data-description   "1" (default) = show description, "0" = hide
  *   data-exclude       Comma-separated list of project slugs to EXCLUDE
  *                      (e.g. "uaejobe" — useful so a project doesn't
  *                       inject links to itself)
@@ -31,10 +35,7 @@
  * The script:
  *  1. Fetches /api/live-links from the hub (CORS-enabled).
  *  2. Filters out links pointing to the current domain (avoids self-links).
- *  3. Injects links in the chosen mode:
- *     - "buttons": a styled card with visible buttons (humans + bots)
- *     - "hidden":  off-screen <a> tags (bots only, no UI clutter)
- *     - "list":    a simple <ul> list
+ *  3. Injects links in the chosen mode.
  *  4. Re-injects on SPA navigations (pushState/replaceState/popstate).
  *
  * Author: Instant Indexing Hub
@@ -51,7 +52,6 @@
   }
   var HUB = src.origin;
 
-  // Read parameters from data-* attributes first, fall back to query string
   function getParam(name, defaultValue) {
     return (
       scriptTag.getAttribute('data-' + name) ||
@@ -62,17 +62,17 @@
 
   var limit = parseInt(getParam('limit', '8'), 10) || 8;
   var shuffle = getParam('shuffle', '1') !== '0';
-  var mode = getParam('mode', 'buttons');
+  var mode = getParam('mode', 'internal');
   var containerSelector = getParam('container', 'body');
   var position = getParam('position', 'append');
   var anchorClass = getParam('class', 'hub-injected-link');
-  var headingTitle = getParam('title', 'روابط ذات صلة');
+  var headingTitle = getParam('heading', 'روابط ذات صلة');
+  var showDescription = getParam('description', '1') !== '0';
   var excludeProjects = getParam('exclude', '')
     .split(',')
     .map(function (s) { return s.trim(); })
     .filter(Boolean);
 
-  // Current host (to filter out self-links)
   var currentHost = '';
   try {
     currentHost = window.location.hostname.replace(/^www\./, '');
@@ -90,9 +90,6 @@
       .then(function (links) {
         if (!Array.isArray(links) || links.length === 0) return;
 
-        // Filter out:
-        //  1. Links to the current host (don't link to ourselves)
-        //  2. Excluded projects
         var filtered = links.filter(function (link) {
           if (excludeProjects.indexOf(link.project) !== -1) return false;
           try {
@@ -112,7 +109,6 @@
     var container = document.querySelector(containerSelector);
     if (!container) container = document.body;
 
-    // Remove any previous injection (idempotent on SPA navigations)
     var previous = container.querySelector('.hub-links-wrapper');
     if (previous) previous.remove();
 
@@ -124,8 +120,8 @@
     if (mode === 'hidden') {
       // ===== HIDDEN MODE =====
       // Off-screen positioning keeps links invisible to humans but fully
-      // discoverable by GoogleBot. This is the SEO-safe approach — using
-      // display:none would make GoogleBot IGNORE the links entirely.
+      // discoverable by GoogleBot. Using display:none would make GoogleBot
+      // IGNORE the links entirely (SEO-unsafe).
       wrapper.style.cssText = [
         'position:absolute',
         'left:-9999px',
@@ -149,7 +145,6 @@
       });
     } else if (mode === 'list') {
       // ===== LIST MODE =====
-      // Simple <ul> list of text links. Visible to humans.
       wrapper.style.cssText = [
         'margin:24px 0',
         'padding:16px',
@@ -198,12 +193,81 @@
         ul.appendChild(li);
       });
       wrapper.appendChild(ul);
-    } else {
-      // ===== BUTTONS MODE (DEFAULT) =====
-      // A styled card with visible buttons. Each button has:
-      //  - The link title as the label
-      //  - A small description below (the project name + target domain)
-      //  - Hover effects
+    } else if (mode === 'inline') {
+      // ===== INLINE MODE =====
+      // Single paragraph with inline links. Looks like natural editorial content.
+      // Best for SEO: appears as a real paragraph with contextual links.
+      wrapper.style.cssText = [
+        'margin:24px 0',
+        'padding:16px 0',
+        'color:inherit',
+        'font-size:inherit',
+        'line-height:1.7',
+      ].join(';');
+
+      if (headingTitle) {
+        var h2 = document.createElement('p');
+        h2.textContent = headingTitle + ': ';
+        h2.style.cssText = [
+          'font-weight:600',
+          'margin:0 0 8px',
+          'color:#475569',
+          'font-size:0.9em',
+        ].join(';');
+        wrapper.appendChild(h2);
+      }
+
+      var p = document.createElement('p');
+      p.style.cssText = 'margin:0;line-height:1.8;';
+
+      var intro = document.createElement('span');
+      intro.textContent = 'اطلع أيضاً على: ';
+      intro.style.cssText = 'color:#64748b;';
+      p.appendChild(intro);
+
+      links.forEach(function (link, i) {
+        if (i > 0) {
+          var sep = document.createElement('span');
+          sep.textContent = ' • ';
+          sep.style.cssText = 'color:#cbd5e1;margin:0 4px;';
+          p.appendChild(sep);
+        }
+        var a = document.createElement('a');
+        a.href = link.goUrl;
+        a.textContent = link.title;
+        a.className = anchorClass;
+        a.setAttribute('data-hub-project', link.project);
+        a.setAttribute('rel', 'noopener noreferrer');
+        a.target = '_blank';
+        a.style.cssText = [
+          'color:#0d9488',
+          'text-decoration:none',
+          'border-bottom:1px dashed #14b8a6',
+          'transition:color 0.15s',
+        ].join(';');
+        a.addEventListener('mouseenter', function () {
+          a.style.color = '#0f766e';
+          a.style.borderBottomStyle = 'solid';
+        });
+        a.addEventListener('mouseleave', function () {
+          a.style.color = '#0d9488';
+          a.style.borderBottomStyle = 'dashed';
+        });
+        p.appendChild(a);
+
+        if (showDescription && link.description) {
+          var desc = document.createElement('span');
+          desc.textContent = ' (' + link.description + ')';
+          desc.style.cssText = 'color:#94a3b8;font-size:0.85em;';
+          p.appendChild(desc);
+        }
+      });
+
+      p.appendChild(document.createTextNode('.'));
+      wrapper.appendChild(p);
+    } else if (mode === 'buttons') {
+      // ===== BUTTONS MODE =====
+      // A styled card with visible buttons.
       wrapper.style.cssText = [
         'margin:32px 0',
         'padding:24px',
@@ -289,6 +353,13 @@
         card.appendChild(titleEl);
         card.appendChild(descEl);
 
+        if (showDescription && link.description) {
+          var descCard = document.createElement('div');
+          descCard.style.cssText = 'font-size:11px;color:#94a3b8;margin-top:2px;line-height:1.4;';
+          descCard.textContent = link.description;
+          card.appendChild(descCard);
+        }
+
         card.addEventListener('mouseenter', function () {
           card.style.transform = 'translateY(-1px)';
           card.style.boxShadow = '0 4px 8px rgba(13,148,136,0.15)';
@@ -305,12 +376,108 @@
 
       wrapper.appendChild(grid);
 
-      // Footer link to the hub (small, for transparency)
       var footer = document.createElement('div');
       footer.style.cssText = 'font-size:10px;color:#94a3b8;margin-top:12px;text-align:left;';
       footer.innerHTML =
         'Powered by <a href="' + HUB + '" target="_blank" rel="noopener noreferrer" style="color:#0d9488;text-decoration:none;">Instant Indexing Hub</a>';
       wrapper.appendChild(footer);
+    } else {
+      // ===== INTERNAL MODE (DEFAULT) =====
+      // Natural in-content links with descriptions. Looks like editorial content.
+      // Each link appears as a paragraph: heading + description with the link inline.
+      // This is the most SEO-friendly because it mimics real internal links.
+      wrapper.style.cssText = [
+        'margin:32px 0',
+        'padding:0',
+      ].join(';');
+
+      if (headingTitle) {
+        var sectionHeading = document.createElement('h3');
+        sectionHeading.textContent = headingTitle;
+        sectionHeading.style.cssText = [
+          'font-size:1.25em',
+          'font-weight:700',
+          'color:#0f172a',
+          'margin:0 0 16px',
+          'padding-bottom:8px',
+          'border-bottom:2px solid #e2e8f0',
+        ].join(';');
+        wrapper.appendChild(sectionHeading);
+      }
+
+      var list = document.createElement('div');
+      list.style.cssText = 'display:grid;gap:16px;';
+
+      links.forEach(function (link) {
+        var domain = '';
+        try {
+          domain = new URL(link.targetUrl).hostname.replace(/^www\./, '');
+        } catch (e) {}
+
+        var item = document.createElement('div');
+        item.style.cssText = [
+          'padding:12px 0',
+          'border-bottom:1px solid #f1f5f9',
+        ].join(';');
+        item.className = 'hub-link-item';
+
+        // Title (the link itself)
+        var a = document.createElement('a');
+        a.href = link.goUrl;
+        a.textContent = link.title;
+        a.className = anchorClass;
+        a.setAttribute('data-hub-project', link.project);
+        a.setAttribute('rel', 'noopener noreferrer');
+        a.target = '_blank';
+        a.style.cssText = [
+          'color:#0d9488',
+          'text-decoration:none',
+          'font-weight:600',
+          'font-size:1em',
+          'display:inline-block',
+          'margin-bottom:4px',
+          'transition:color 0.15s',
+        ].join(';');
+        a.addEventListener('mouseenter', function () {
+          a.style.color = '#0f766e';
+          a.style.textDecoration = 'underline';
+        });
+        a.addEventListener('mouseleave', function () {
+          a.style.color = '#0d9488';
+          a.style.textDecoration = 'none';
+        });
+        item.appendChild(a);
+
+        // Description below
+        if (showDescription && link.description) {
+          var descP = document.createElement('p');
+          descP.textContent = link.description;
+          descP.style.cssText = [
+            'margin:4px 0 0',
+            'font-size:0.875em',
+            'color:#64748b',
+            'line-height:1.6',
+          ].join(';');
+          item.appendChild(descP);
+        }
+
+        // Source domain (small text)
+        var source = document.createElement('div');
+        source.style.cssText = 'font-size:0.75em;color:#94a3b8;margin-top:4px;';
+        source.textContent = 'المصدر: ' + domain;
+        item.appendChild(source);
+
+        list.appendChild(item);
+      });
+
+      wrapper.appendChild(list);
+
+      // Subtle footer (not visible to humans, but discoverable)
+      var footerInternal = document.createElement('div');
+      footerInternal.style.cssText = 'font-size:0.7em;color:#cbd5e1;margin-top:16px;';
+      footerInternal.innerHTML =
+        '— <a href="' + HUB + '" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">Instant Indexing Hub</a>';
+      wrapper.appendChild(footerInternal);
     }
 
     // Inject at the chosen position
