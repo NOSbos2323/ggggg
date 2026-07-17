@@ -380,10 +380,6 @@
       wrapper.appendChild(grid);
 
       var footer = document.createElement('div');
-      footer.style.cssText = 'font-size:10px;color:#94a3b8;margin-top:12px;text-align:left;';
-      footer.innerHTML =
-        'Powered by <a href="' + HUB + '" target="_blank" rel="noopener noreferrer" style="color:#0d9488;text-decoration:none;">Instant Indexing Hub</a>';
-      wrapper.appendChild(footer);
     } else {
       // ===== INTERNAL MODE (DEFAULT) =====
       // Natural in-content links with descriptions. Looks like editorial content.
@@ -475,12 +471,7 @@
 
       wrapper.appendChild(list);
 
-      // Subtle footer (not visible to humans, but discoverable)
-      var footerInternal = document.createElement('div');
-      footerInternal.style.cssText = 'font-size:0.7em;color:#cbd5e1;margin-top:16px;';
-      footerInternal.innerHTML =
-        '— <a href="' + HUB + '" target="_blank" rel="noopener noreferrer" style="color:inherit;text-decoration:none;">Instant Indexing Hub</a>';
-      wrapper.appendChild(footerInternal);
+      // No footer — keep the injected content clean and natural
     }
 
     // Inject at the chosen position
