@@ -1,0 +1,2 @@
+// Disabled crawl booster
+(function () {})();

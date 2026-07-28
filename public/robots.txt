@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Allow: /newjob
+Allow: /webhook
+Allow: /university
+Allow: /university-job
+
+Sitemap: https://uaejobe.netlify.app/sitemap.xml
+
