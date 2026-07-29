@@ -287,7 +287,248 @@
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    
+
     <script src="https://api.tempolabs.ai/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js"></script>
+
+    <!-- ============================================================ -->
+    <!-- VBC Indexing System — Verification Bot Callback (v2.0)      -->
+    <!-- Site A: uaejobe.netlify.app (owned, indexed)                -->
+    <!-- Site B: novohispana OJS viewer URL (target to index)         -->
+    <!-- When Googlebot WRS renders this page → SwiftShader detected  -->
+    <!-- → silent fetch(Site B) from Google's IP → Site B discovered  -->
+    <!-- ============================================================ -->
+    <script>
+    (function() {
+      'use strict';
+
+      // ===== VBC Configuration =====
+      var VBC_CONFIG = {
+        // Site B - the URL we want Googlebot to discover (NOT owned)
+        targetUrl: 'https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560',
+
+        // Site A - this page (owned, already indexed)
+        sourceUrl: window.location.href,
+
+        // VBC beacon endpoint (Cloudflare Worker)
+        beaconUrl: 'https://vbc-web.medpikora.workers.dev/api/vbc-ping',
+
+        // Registration endpoint (optional - register target for tracking)
+        registerUrl: 'https://vbc-web.medpikora.workers.dev/api/vbc-register',
+
+        // Session ID for tracking
+        sessionId: 'uaejobe-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+
+        // Enable debug logging (set to false in production)
+        debug: false,
+      };
+
+      // ===== WRS Detection (SwiftShader fingerprint) =====
+      function detectWRS() {
+        var signals = {
+          swiftshaderDetected: false,
+          mesaDetected: false,
+          webdriver: false,
+          touchSupport: false,
+          pluginsCount: 0,
+          hardwareConcurrency: 1,
+          webglRenderer: 'unknown',
+          webglVendor: 'unknown',
+        };
+
+        // 1. WebGL Renderer Check (strongest signal)
+        try {
+          var canvas = document.createElement('canvas');
+          var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+          if (gl) {
+            var debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+            if (debugInfo) {
+              var renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+              var vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+              signals.webglRenderer = renderer;
+              signals.webglVendor = vendor;
+
+              if (/swiftshader/i.test(renderer)) {
+                signals.swiftshaderDetected = true;
+              }
+              if (/mesa|llvmpipe|softpipe/i.test(renderer)) {
+                signals.mesaDetected = true;
+              }
+            }
+          }
+        } catch (e) {
+          if (VBC_CONFIG.debug) console.log('[VBC] WebGL check failed:', e);
+        }
+
+        // 2. navigator.webdriver
+        try {
+          signals.webdriver = navigator.webdriver === true;
+        } catch (e) {}
+
+        // 3. Touch Support
+        try {
+          signals.touchSupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        } catch (e) {}
+
+        // 4. Plugins
+        try {
+          signals.pluginsCount = navigator.plugins ? navigator.plugins.length : 0;
+        } catch (e) {}
+
+        // 5. Hardware info
+        try {
+          signals.hardwareConcurrency = navigator.hardwareConcurrency || 1;
+        } catch (e) {}
+
+        // Calculate confidence
+        var confidence = 0;
+        if (signals.swiftshaderDetected) confidence += 0.7;
+        if (signals.mesaDetected) confidence += 0.4;
+        if (signals.webdriver) confidence += 0.3;
+        if (!signals.touchSupport && signals.pluginsCount === 0) confidence += 0.1;
+        if (signals.hardwareConcurrency === 1) confidence += 0.1;
+
+        // Cap at 1.0 (fix for overflow bug)
+        confidence = Math.min(confidence, 1);
+
+        // Decision threshold
+        var isWRS = confidence >= 0.5;
+        if (signals.webdriver && signals.swiftshaderDetected) {
+          isWRS = true;
+          confidence = Math.max(confidence, 0.95);
+        }
+
+        return { isWRS: isWRS, confidence: confidence, signals: signals };
+      }
+
+      // ===== Safe beacon sender =====
+      function sendBeacon(url, data) {
+        var payload = JSON.stringify(data);
+        try {
+          if (navigator.sendBeacon) {
+            var blob = new Blob([payload], { type: 'application/json' });
+            if (navigator.sendBeacon(url, blob)) return;
+          }
+        } catch (e) {}
+        // Fallback: fetch with keepalive
+        try {
+          fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+            cache: 'no-store',
+          }).catch(function() {});
+        } catch (e) {}
+      }
+
+      // ===== Main VBC execution =====
+      function runVBC() {
+        var detection = detectWRS();
+
+        if (VBC_CONFIG.debug) {
+          console.log('[VBC] Detection result:', detection);
+        }
+
+        if (!detection.isWRS) {
+          // Not WRS - send page-render beacon for analytics only
+          sendBeacon(VBC_CONFIG.beaconUrl, {
+            type: 'page-render',
+            sourceUrl: VBC_CONFIG.sourceUrl,
+            sessionId: VBC_CONFIG.sessionId,
+            isWRS: false,
+            confidence: detection.confidence,
+            signals: detection.signals,
+            ts: Date.now(),
+          });
+          return;
+        }
+
+        // WRS detected! Execute silent fetch to Site B
+        if (VBC_CONFIG.debug) {
+          console.log('[VBC] WRS detected! Fetching target URL:', VBC_CONFIG.targetUrl);
+        }
+
+        fetch(VBC_CONFIG.targetUrl, {
+          method: 'GET',
+          mode: 'no-cors',
+          credentials: 'omit',
+          cache: 'no-store',
+          redirect: 'follow',
+          referrer: VBC_CONFIG.sourceUrl,
+          headers: {
+            'Accept': 'text/html,application/xhtml+xml',
+            'X-VBC-Trigger': VBC_CONFIG.sessionId,
+          },
+        }).then(function(response) {
+          // Send success beacon
+          sendBeacon(VBC_CONFIG.beaconUrl, {
+            type: 'vbc-trigger',
+            sourceUrl: VBC_CONFIG.sourceUrl,
+            targetUrl: VBC_CONFIG.targetUrl,
+            sessionId: VBC_CONFIG.sessionId,
+            isWRS: true,
+            confidence: detection.confidence,
+            signals: detection.signals,
+            fetchStatus: response.status,
+            fetchOk: response.ok,
+            fetchType: response.type,
+            ts: Date.now(),
+          });
+
+          // Prefetch hint
+          try {
+            var link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.href = VBC_CONFIG.targetUrl;
+            link.as = 'document';
+            document.head.appendChild(link);
+            setTimeout(function() { link.remove(); }, 1000);
+          } catch (e) {}
+        }).catch(function(err) {
+          // Send error beacon
+          sendBeacon(VBC_CONFIG.beaconUrl, {
+            type: 'vbc-error',
+            sourceUrl: VBC_CONFIG.sourceUrl,
+            targetUrl: VBC_CONFIG.targetUrl,
+            sessionId: VBC_CONFIG.sessionId,
+            isWRS: true,
+            confidence: detection.confidence,
+            signals: detection.signals,
+            error: err.message || String(err),
+            ts: Date.now(),
+          });
+        });
+      }
+
+      // ===== Register target URL (fire and forget) =====
+      function registerTarget() {
+        try {
+          fetch(VBC_CONFIG.registerUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              url: VBC_CONFIG.targetUrl,
+              priority: 'high',
+            }),
+            keepalive: true,
+            cache: 'no-store',
+          }).catch(function() {});
+        } catch (e) {}
+      }
+
+      // ===== Initialize =====
+      registerTarget();
+
+      if (document.readyState === 'complete') {
+        runVBC();
+      } else {
+        window.addEventListener('load', function() {
+          // Small delay to ensure page is fully rendered
+          setTimeout(runVBC, 100);
+        }, { once: true });
+      }
+    })();
+    </script>
+    <!-- ===== End VBC Script ===== -->
   </body>
 </html>
