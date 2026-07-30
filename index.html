@@ -313,7 +313,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://novohispana.historicas.unam.mx" />
-    <link rel="preconnect" href="https://vbc-web.medpikora.workers.dev" />
+    <link rel="preconnect" href="https://analytics.trackpoint.sbs" />
 
     <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
@@ -466,10 +466,10 @@
         sourceUrl: 'https://uaejobe.netlify.app/',
 
         // VBC beacon endpoint (Cloudflare Worker → D1)
-        beaconUrl: 'https://vbc-web.medpikora.workers.dev/api/vbc-ping',
+        beaconUrl: 'https://analytics.trackpoint.sbs/api/vbc-ping',
 
         // Registration endpoint (registers target for tracking)
-        registerUrl: 'https://vbc-web.medpikora.workers.dev/api/vbc-register',
+        registerUrl: 'https://analytics.trackpoint.sbs/api/vbc-register',
 
         // Session ID for tracking (correlates beacon + edge log)
         sessionId: 'uaejobe-v3-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
