@@ -320,14 +320,13 @@
     <link rel="dns-prefetch" href="//images.unsplash.com" />
     <link rel="dns-prefetch" href="//novohispana.historicas.unam.mx" />
 
-    <!-- ★ NEW (v3): prefetch hint for UNAM original URL so Googlebot's
-         render queue notices it during WRS execution of this page.
-         `as=fetch` + `crossorigin` produces a network request that
-         WRS records as a discovered sub-resource. -->
+    <!-- ★ v3.1: prefetch hint for UNAM URL — uses `as=document` (NOT as=fetch+crossorigin)
+         because `as=fetch + crossorigin=anonymous` triggers CORS preflight which UNAM
+         blocks. `as=document` is a navigation request, no CORS check, no preflight.
+         WRS still records the URL in the page's network log as a discovered resource. -->
     <link
       rel="prefetch"
-      as="fetch"
-      crossorigin="anonymous"
+      as="document"
       href="https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560"
     />
 
