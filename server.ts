@@ -521,7 +521,7 @@ app.post("/api/audit", async (req, res) => {
     let generatedFixes = {
       htmlSnippet: "",
       nginxConf: "",
-      netlifyToml: "",
+      vercelJson: "",
       cloudflareWorker: "",
       robotsTxt: ""
     };
@@ -545,7 +545,7 @@ app.post("/api/audit", async (req, res) => {
   "summary": "نص موجز يشرح التقييم والتوصيات الفورية",
   "htmlFix": "كود الميتا والكانونيكال الصحيح للإدراج في <head>",
   "nginxFix": "توصيف أو إعداد Nginx لحل مشاكل الهيدرز والتوجيه",
-  "netlifyFix": "إعدادات netlify.toml إن وجدت",
+  "vercelFix": "إعدادات vercel.json المناسبة للنشر على Vercel",
   "workerFix": "كود Cloudflare Worker لمعالجة X-Robots-Tag والتوجيهات على الـ Edge",
   "robotsFix": "ملف robots.txt القياسي الموصى به"
 }`;
@@ -561,11 +561,11 @@ app.post("/api/audit", async (req, res) => {
                 summary: { type: Type.STRING },
                 htmlFix: { type: Type.STRING },
                 nginxFix: { type: Type.STRING },
-                netlifyFix: { type: Type.STRING },
+                vercelFix: { type: Type.STRING },
                 workerFix: { type: Type.STRING },
                 robotsFix: { type: Type.STRING }
               },
-              required: ["summary", "htmlFix", "nginxFix", "netlifyFix", "workerFix", "robotsFix"]
+              required: ["summary", "htmlFix", "nginxFix", "vercelFix", "workerFix", "robotsFix"]
             }
           }
         });
@@ -587,7 +587,7 @@ app.post("/api/audit", async (req, res) => {
         generatedFixes = {
           htmlSnippet: parsedAi.htmlFix || "",
           nginxConf: parsedAi.nginxFix || "",
-          netlifyToml: parsedAi.netlifyFix || "",
+          vercelJson: parsedAi.vercelFix || "",
           cloudflareWorker: parsedAi.workerFix || "",
           robotsTxt: parsedAi.robotsFix || ""
         };
@@ -633,12 +633,13 @@ server {
     }
 }`,
 
-        netlifyToml: `# Netlify Headers configuration for Indexing
-[[headers]]
-  for = "/*"
-  [headers.values]
-    X-Robots-Tag = "index, follow"
-    Access-Control-Allow-Origin = "*"`,
+vercelJson: `{
+  "headers": [
+    { "source": "/api/(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }] },
+    { "source": "/(.*)", "headers": [{ "key": "X-Content-Type-Options", "value": "nosniff" }, { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }] }
+  ],
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}`,
 
         cloudflareWorker: `// Cloudflare Worker: Edge Header & User-Agent Inspector
 addEventListener('fetch', event => {

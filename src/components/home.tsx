@@ -73,7 +73,7 @@ interface AuditResponseData {
   actionableFixes: {
     htmlSnippet: string;
     nginxConf: string;
-    netlifyToml: string;
+    vercelJson: string;
     cloudflareWorker: string;
     robotsTxt: string;
   };
@@ -350,7 +350,7 @@ const Home: React.FC = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-800/80 py-8 text-center text-xs text-slate-500">
-        <p>Google Indexing Probability & Technical Audit Engine (G-IPAE) © {new Date().getFullYear()}</p>
+        <p>Indexora SEO — محرك تدقيق وتحسين ظهور المواقع © {new Date().getFullYear()}</p>
         <p className="mt-1 text-[11px] text-slate-600">
           تم التطوير بالاعتماد على خوارزميات جوجل وتوجيهات Search Console و Google Web Rendering Service.
         </p>

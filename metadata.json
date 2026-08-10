@@ -1,6 +1,6 @@
 {
-  "name": "Google Indexing Probability Engine (G-IPAE)",
-  "description": "محرك تقييم احتمالية الفهرسة والتدقيق التقني برمجياً وفق خوارزميات ومعايير جوجل الحديثة",
+  "name": "Indexora SEO",
+  "description": "محرك عربي متقدم لتدقيق SEO وقياس جاهزية الفهرسة واقتراح الإصلاحات التقنية",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

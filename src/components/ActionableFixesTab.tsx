@@ -5,7 +5,7 @@ interface ActionableFixesProps {
   fixes: {
     htmlSnippet: string;
     nginxConf: string;
-    netlifyToml: string;
+    vercelJson: string;
     cloudflareWorker: string;
     robotsTxt: string;
   };
@@ -13,7 +13,7 @@ interface ActionableFixesProps {
 }
 
 export const ActionableFixesTab: React.FC<ActionableFixesProps> = ({ fixes, aiSuggestions }) => {
-  const [activeTab, setActiveTab] = useState<"html" | "nginx" | "netlify" | "worker" | "robots">("html");
+  const [activeTab, setActiveTab] = useState<"html" | "nginx" | "vercel" | "worker" | "robots">("html");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
   const handleCopy = (text: string, key: string) => {
@@ -26,7 +26,7 @@ export const ActionableFixesTab: React.FC<ActionableFixesProps> = ({ fixes, aiSu
     { id: "html", label: "HTML Meta & Canonical", icon: FileCode, code: fixes.htmlSnippet, lang: "html" },
     { id: "nginx", label: "Nginx Server Config", icon: Terminal, code: fixes.nginxConf, lang: "nginx" },
     { id: "worker", label: "Cloudflare Edge Worker", icon: Shield, code: fixes.cloudflareWorker, lang: "javascript" },
-    { id: "netlify", label: "Netlify (netlify.toml)", icon: Layers, code: fixes.netlifyToml, lang: "toml" },
+    { id: "vercel", label: "Vercel (vercel.json)", icon: Layers, code: fixes.vercelJson, lang: "json" },
     { id: "robots", label: "robots.txt القياسي", icon: Code2, code: fixes.robotsTxt, lang: "plaintext" }
   ];
 

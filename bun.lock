@@ -3,7 +3,7 @@
   "configVersion": 1,
   "workspaces": {
     "": {
-      "name": "starter",
+      "name": "indexora-seo",
       "dependencies": {
         "@google/genai": "^2.13.0",
         "@hookform/resolvers": "^3.6.0",
