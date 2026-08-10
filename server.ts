@@ -85,6 +85,40 @@ const BENCHMARK_CASES = [
     ttfbMs: 120
   },
   {
+    id: "valid-job-posting",
+    name: "JobPosting صالح وجاهز للفهرسة",
+    description: "اختبار Schema.org من نوع JobPosting مع بيانات وظيفة متسقة وCanonical ذاتي.",
+    url: "https://example.com/jobs/seo-technical-auditor",
+    rawHtml: `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>مدقق SEO تقني - وظيفة بدوام كامل</title>
+  <meta name="description" content="وظيفة مدقق SEO تقني لتحليل الأداء والفهرسة وتحسين ظهور المواقع.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="https://example.com/jobs/seo-technical-auditor">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    "title": "مدقق SEO تقني",
+    "description": "نبحث عن مختص لتحليل قابلية الزحف والفهرسة وتحسين الأداء التقني للمواقع.",
+    "datePosted": "2026-01-15",
+    "validThrough": "2026-12-31",
+    "employmentType": "FULL_TIME",
+    "hiringOrganization": { "@type": "Organization", "name": "Indexora SEO", "sameAs": "https://indexora-seo.vercel.app/" },
+    "jobLocation": { "@type": "Place", "address": { "@type": "PostalAddress", "addressCountry": "AE", "addressLocality": "Abu Dhabi" } },
+    "baseSalary": { "@type": "MonetaryAmount", "currency": "AED", "value": { "@type": "QuantitativeValue", "minValue": 10000, "maxValue": 16000, "unitText": "MONTH" } }
+  }
+  </script>
+</head>
+<body><main><h1>مدقق SEO تقني</h1><p>حلّل بنية المواقع وبياناتها المنظمة وأداء صفحاتها.</p><h2>المهام والمسؤوليات</h2><p>تدقيق الفهرسة، مراجعة البيانات المنظمة، وكتابة تقارير قابلة للتنفيذ.</p></main></body>
+</html>`,
+    headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "index, follow" },
+    statusCode: 200,
+    ttfbMs: 140
+  },
+  {
     id: "fatal-noindex",
     name: "عائق قاتل: وسم Meta Noindex (Fatal Blocker)",
     description: "صفحة ممتازة من حيث المحتوى لكن تم حظرها بـ meta noindex في الهيدر، مما يحول النتيجة إلى 0% فوراً.",
